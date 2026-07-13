@@ -6,4 +6,5 @@ numpy
 requests
 matplotlib
 huggingface_hub
+imageio-ffmpeg
 git+https://github.com/huggingface/transformers.git
