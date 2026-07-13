@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #SBATCH --account=dilucam-arme
 #SBATCH --qos=bbgpu
