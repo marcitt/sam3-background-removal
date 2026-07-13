@@ -14,7 +14,8 @@ import matplotlib
 from transformers import Sam3Processor, Sam3Model
 
 PROJECT_ROOT = os.environ.get(
-    "SAM3_PROJECT_ROOT", "/rds/projects/d/dilucam-arme/marci_sam3_segmentation"
+    "SAM3_PROJECT_ROOT",
+    "/rds/projects/d/dilucam-arme/marci_sam3_segmentation/sam3-background-removal",
 )
 IMAGE_PATH = os.path.join(PROJECT_ROOT, "data", "test_3.png")
 TEXT_PROMPT = "person and violins"
