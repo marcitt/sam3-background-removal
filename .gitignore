@@ -1,0 +1,10 @@
+.DS_Store
+pyrightconfig.json
+
+hf_cache/
+venvs/
+data/
+*.out
+*.err
+
+
