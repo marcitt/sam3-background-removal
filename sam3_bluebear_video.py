@@ -12,7 +12,7 @@ from PIL import Image
 from transformers import Sam3VideoModel, Sam3VideoProcessor, Sam3VideoConfig
 from transformers.video_utils import load_video
 
-import imageio_ffmpeg
+# import imageio_ffmpeg
 
 PROJECT_ROOT = os.environ.get(
     "SAM3_PROJECT_ROOT",
@@ -86,23 +86,23 @@ for model_outputs in model.propagate_in_video_iterator(
 
 print(f"Finished processing {frame_count} frames.")
 
-ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+# ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
-subprocess.run(
-    [
-        ffmpeg_path,
-        "-y",
-        "-framerate",
-        str(FPS),
-        "-i",
-        os.path.join(OUTPUT_DIR, "frame_%05d.png"),
-        "-c:v",
-        "libx264",
-        "-pix_fmt",
-        "yuv420p",
-        OUTPUT_VIDEO,
-    ],
-    check=True,
-)
+# subprocess.run(
+#     [
+#         ffmpeg_path,
+#         "-y",
+#         "-framerate",
+#         str(FPS),
+#         "-i",
+#         os.path.join(OUTPUT_DIR, "frame_%05d.png"),
+#         "-c:v",
+#         "libx264",
+#         "-pix_fmt",
+#         "yuv420p",
+#         OUTPUT_VIDEO,
+#     ],
+#     check=True,
+# )
 
-print(f"Saved final video to {OUTPUT_VIDEO}")
+# print(f"Saved final video to {OUTPUT_VIDEO}")
