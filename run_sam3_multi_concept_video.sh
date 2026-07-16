@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:a100:1
 #SBATCH --time=60
 #SBATCH --ntasks=1
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --output=logs/sam3_multi_concept_%j.out
 #SBATCH --error=logs/sam3_multi_concept_%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
