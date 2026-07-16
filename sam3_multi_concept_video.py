@@ -1,6 +1,8 @@
 """
 Multi-concept video segmentation: runs each concept as a separate SAM3 video
-tracking pass, merges masks per frame, then renders and stitches the final video.
+tracking pass, merges masks per frame, applies dilation to close small gaps
+between adjacent concepts (e.g. hand touching bow), then renders and stitches
+the final video.
 Adapted for BlueBEAR (CUDA).
 """
 import os
@@ -8,6 +10,7 @@ import subprocess
 import torch
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 from transformers import Sam3VideoModel, Sam3VideoProcessor, Sam3VideoConfig
 from transformers.video_utils import load_video
 import imageio_ffmpeg
@@ -23,6 +26,11 @@ OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "sam3_multi_concept.mp4")
 CONCEPTS = ["person", "violin", "violin bow"]
 MAX_FRAMES = 50
 FPS = 30
+
+# how many pixels to grow the combined mask by, to close small gaps
+# between adjacent concepts (e.g. hand gripping the bow). Start small —
+# too high will eat into background around the true edges.
+DILATION_ITERATIONS = 3
 
 if not torch.cuda.is_available():
     raise RuntimeError("CUDA not available")
@@ -89,7 +97,13 @@ def extract_mask(image, mask, background_color=(255, 255, 255)):
     return Image.fromarray(background)
 
 
-print("\nRendering merged frames...")
+print(f"\nApplying dilation ({DILATION_ITERATIONS} iterations) to close gaps...")
+for frame_idx in combined_masks:
+    combined_masks[frame_idx] = ndimage.binary_dilation(
+        combined_masks[frame_idx], iterations=DILATION_ITERATIONS
+    )
+
+print("Rendering merged frames...")
 frame_count = 0
 for frame_idx in sorted(combined_masks.keys()):
     frame_np = video_frames[frame_idx]
