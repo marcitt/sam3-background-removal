@@ -2,11 +2,11 @@
 #SBATCH --account=dilucam-arme
 #SBATCH --qos=bbgpu
 #SBATCH --gres=gpu:a100:1
-#SBATCH --time=90
+#SBATCH --time=20
 #SBATCH --ntasks=1
 #SBATCH --mem=32G
-#SBATCH --output=sam3_video%j.out
-#SBATCH --error=sam3_video%j.err
+#SBATCH --output=sam3_video_%j.out
+#SBATCH --error=sam3_video_%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=m.talbot@bham.ac.uk
 
