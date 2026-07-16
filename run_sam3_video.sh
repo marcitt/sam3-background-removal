@@ -5,8 +5,8 @@
 #SBATCH --time=20
 #SBATCH --ntasks=1
 #SBATCH --mem=32G
-#SBATCH --output=sam3_video_%j.out
-#SBATCH --error=sam3_video_%j.err
+#SBATCH --output=logs/sam3_video_%j.out
+#SBATCH --error=logs/sam3_video_%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=m.talbot@bham.ac.uk
 
