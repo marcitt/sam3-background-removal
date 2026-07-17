@@ -19,9 +19,9 @@ PROJECT_ROOT = os.environ.get(
     "SAM3_PROJECT_ROOT",
     "/rds/projects/d/dilucam-arme/marci_sam3_segmentation/sam3-background-removal",
 )
-VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "C6_T1.MOV")
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "frames_out_combined")
-OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "sam3_multi_concept_2.mp4")
+VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "IMG_5097")
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "frames_out_combined_2")
+OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "sam3_multi_concept_3.mp4")
 
 CONCEPTS = ["person", "violin", "violin bow"]
 MAX_FRAMES = 50
