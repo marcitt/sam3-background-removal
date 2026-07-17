@@ -19,7 +19,7 @@ PROJECT_ROOT = os.environ.get(
     "SAM3_PROJECT_ROOT",
     "/rds/projects/d/dilucam-arme/marci_sam3_segmentation/sam3-background-removal",
 )
-VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "IMG_5097")
+VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "IMG_5097.mov")
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "frames_out_combined_2")
 OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "sam3_multi_concept_3.mp4")
 
