@@ -1,6 +1,7 @@
 """
 References:
 - Claude Sonnet 5
+- https://huggingface.co/facebook/sam3
 """
 import os
 import subprocess
@@ -109,16 +110,20 @@ for concept in CONCEPTS:
     for model_outputs in model.propagate_in_video_iterator(
         inference_session=inference_session, max_frame_num_to_track=MAX_FRAMES
     ):
-        frame_idx = model_outputs.frame_idx
+        frame_idx = model_outputs.frame_idx #label
+        
         processed_outputs = processor.postprocess_outputs(inference_session, model_outputs)
         masks = processed_outputs["masks"].cpu().numpy() > 0.5  # (num_instances, H, W)
 
+        # if the frame is not already stored in combined masks it gets stored as an empty array
         if frame_idx not in combined_masks:
-            combined_masks[frame_idx] = np.zeros((frame_h, frame_w), dtype=bool)
+            combined_masks[frame_idx] = np.zeros((frame_h, frame_w), dtype=bool) 
 
+        # apply bitwise OR
         for mask in masks:
             combined_masks[frame_idx] |= mask
-            
+    
+    # clear
     del inference_session
     torch.cuda.empty_cache()
 
@@ -139,8 +144,9 @@ for frame_idx in combined_masks:
 
 
 frame_count = 0
+# sort masks in combined_masks in order of frame_idx
 for frame_idx in sorted(combined_masks.keys()):
-    frame_np = video_frames[frame_idx]
+    frame_np = video_frames[frame_idx] #get the real video frame
     frame_image = (
         frame_np if isinstance(frame_np, Image.Image) else Image.fromarray(np.array(frame_np))
     )
