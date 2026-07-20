@@ -2,7 +2,7 @@ torch
 torchvision
 accelerate
 
-numpy
+numpy>=1.25
 requests
 
 matplotlib
