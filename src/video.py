@@ -53,7 +53,19 @@ print(f"GPU: {torch.cuda.get_device_name(0)}")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 model_config = Sam3VideoConfig.from_pretrained("facebook/sam3")
-model = Sam3VideoModel.from_pretrained("facebook/sam3", config=model_config).to(device)
+
+model_config.score_threshold_detection = 0.15   # confidence to start detecting an object at all
+model_config.new_det_thresh = 0.7   # footage has a fixed, known set of objects,s o be strict about starting to track anything "new"
+
+model_config.assoc_iou_thresh = 0.05             # how much overlap counts as "same object as last frame"
+
+model_config.fill_hole_area = 32                # fills small internal gaps within a mask
+
+model_config.hotstart_unmatch_thresh = 4 
+model_config.min_trk_keep_alive = -1
+
+
+model = Sam3VideoModel.from_pretrained("facebook/sam3", config=model_config,  dtype=torch.bfloat16).to(device)
 processor = Sam3VideoProcessor.from_pretrained("facebook/sam3")
 print("Model loaded successfully.")
 
