@@ -11,5 +11,7 @@ scipy
 pillow
 imageio-ffmpeg
 
+av==0.6.0
+
 huggingface_hub
 git+https://github.com/huggingface/transformers.git
