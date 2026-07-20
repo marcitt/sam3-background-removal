@@ -81,6 +81,16 @@ def get_frame_shape():
     arr = first if isinstance(first, np.ndarray) else np.array(first)
     return arr.shape[:2]  # (H, W)
 
+# added downscaling
+TARGET_H = 1080
+orig_h, orig_w = get_frame_shape() 
+scale = TARGET_H / orig_h
+target_size = (int(orig_w * scale), TARGET_H)  # (W, H) for PIL resize
+
+video_frames = [
+    np.array(Image.fromarray(np.array(f)).resize(target_size, Image.BILINEAR))
+    for f in video_frames
+]
 
 frame_h, frame_w = get_frame_shape()
 
