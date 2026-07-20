@@ -1,9 +1,6 @@
 """
-Multi-concept video segmentation: runs each concept as a separate SAM3 video
-tracking pass, merges masks per frame, applies dilation to close small gaps
-between adjacent concepts (e.g. hand touching bow), then renders and stitches
-the final video.
-Adapted for BlueBEAR (CUDA).
+References:
+- Claude Sonnet 5
 """
 import os
 import subprocess
@@ -15,22 +12,37 @@ from transformers import Sam3VideoModel, Sam3VideoProcessor, Sam3VideoConfig
 from transformers.video_utils import load_video
 import imageio_ffmpeg
 
+import shutil
+
+from datetime import datetime
+
+
 PROJECT_ROOT = os.environ.get(
     "SAM3_PROJECT_ROOT",
-    "/rds/projects/d/dilucam-arme/marci_sam3_segmentation/sam3-background-removal",
+    "/rds/projects/d/dilucam-arme/sam3-background-removal",
 )
-VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "IMG_5097.mov")
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "frames_out_combined_2")
-OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "sam3_multi_concept_3.mp4")
+
+VIDEO = "IMG_5097.mov"
+
+VIDEO_PATH = os.path.join(PROJECT_ROOT, "data_in", VIDEO)
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "tmp", "frames_out")
+
+video_name = os.path.splitext(VIDEO)[0]
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "data_out", f"{video_name}_{timestamp}.mp4")
 
 CONCEPTS = ["person", "violin", "violin bow"]
-MAX_FRAMES = 50
+
+# CONCEPTS = ["person, violin, bow"]              
+
+MAX_FRAMES = 500
 FPS = 30
 
 # how many pixels to grow the combined mask by, to close small gaps
 # between adjacent concepts (e.g. hand gripping the bow). Start small —
 # too high will eat into background around the true edges.
-DILATION_ITERATIONS = 3
+CLOSING_ITERATIONS = 3
 
 if not torch.cuda.is_available():
     raise RuntimeError("CUDA not available")
@@ -46,11 +58,11 @@ processor = Sam3VideoProcessor.from_pretrained("facebook/sam3")
 print("Model loaded successfully.")
 
 video_frames, _ = load_video(VIDEO_PATH)
-print(f"Loaded {len(video_frames)} frames from {VIDEO_PATH}")
+video_frames = video_frames[:MAX_FRAMES]
 
-# frame_idx -> boolean mask (H, W), accumulated across all concepts
+# accumulated across all concepts
 combined_masks = {}
-
+# may be too large over time
 
 def get_frame_shape():
     first = video_frames[0]
@@ -61,7 +73,6 @@ def get_frame_shape():
 frame_h, frame_w = get_frame_shape()
 
 for concept in CONCEPTS:
-    print(f"\n=== Tracking concept: '{concept}' ===")
 
     inference_session = processor.init_video_session(
         video=video_frames,
@@ -85,8 +96,9 @@ for concept in CONCEPTS:
 
         for mask in masks:
             combined_masks[frame_idx] |= mask
-
-    print(f"  -> tracked across {len(combined_masks)} frame(s) so far")
+            
+    del inference_session
+    torch.cuda.empty_cache()
 
 
 def extract_mask(image, mask, background_color=(255, 255, 255)):
@@ -97,13 +109,13 @@ def extract_mask(image, mask, background_color=(255, 255, 255)):
     return Image.fromarray(background)
 
 
-print(f"\nApplying dilation ({DILATION_ITERATIONS} iterations) to close gaps...")
+print(f"\nApplying closing ({CLOSING_ITERATIONS} iterations) to close gaps...")
 for frame_idx in combined_masks:
-    combined_masks[frame_idx] = ndimage.binary_dilation(
-        combined_masks[frame_idx], iterations=DILATION_ITERATIONS
+    combined_masks[frame_idx] = ndimage.binary_closing(
+        combined_masks[frame_idx], iterations=CLOSING_ITERATIONS
     )
 
-print("Rendering merged frames...")
+
 frame_count = 0
 for frame_idx in sorted(combined_masks.keys()):
     frame_np = video_frames[frame_idx]
@@ -116,8 +128,8 @@ for frame_idx in sorted(combined_masks.keys()):
     result_image.save(os.path.join(OUTPUT_DIR, f"frame_{frame_idx:05d}.png"))
     frame_count += 1
 
-print(f"Rendered {frame_count} merged frames.")
 
+# Merging frames
 ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 subprocess.run(
     [ffmpeg_path, "-y", "-framerate", str(FPS),
@@ -126,3 +138,6 @@ subprocess.run(
     check=True,
 )
 print(f"Saved final video to {OUTPUT_VIDEO}")
+
+shutil.rmtree(OUTPUT_DIR)
+print(f"Removed intermediate frames directory: {OUTPUT_DIR}")

@@ -1,10 +1,15 @@
 torch
 torchvision
 accelerate
-pillow
+
 numpy
 requests
+
 matplotlib
-huggingface_hub
+scipy
+
+pillow
 imageio-ffmpeg
+
+huggingface_hub
 git+https://github.com/huggingface/transformers.git
