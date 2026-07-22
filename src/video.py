@@ -37,7 +37,7 @@ CONCEPTS = ["person", "violin", "violin bow"]
 
 # CONCEPTS = ["person, violin, bow"]              
 
-MAX_FRAMES = 500
+MAX_FRAMES = 1500
 FPS = 30
 
 # how many pixels to grow the combined mask by, to close small gaps
@@ -70,7 +70,7 @@ model = Sam3VideoModel.from_pretrained("facebook/sam3", config=model_config, low
 processor = Sam3VideoProcessor.from_pretrained("facebook/sam3")
 print("Model loaded successfully.")
 
-video_frames, _ = load_video(VIDEO_PATH)
+video_frames, _ = load_video(VIDEO_PATH, num_frames=MAX_FRAMES)
 video_frames = video_frames[:MAX_FRAMES]
 
 # accumulated across all concepts
