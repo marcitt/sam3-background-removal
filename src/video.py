@@ -23,7 +23,7 @@ PROJECT_ROOT = os.environ.get(
     "/rds/projects/d/dilucam-arme/sam3-background-removal",
 )
 
-VIDEO = "MG_5097.mov"
+VIDEO = "IMG_5097.mov"
 
 VIDEO_PATH = os.path.join(PROJECT_ROOT, "data_in", VIDEO)
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "tmp", "frames_out")
