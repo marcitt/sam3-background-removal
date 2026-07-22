@@ -37,7 +37,7 @@ CONCEPTS = ["person", "violin", "violin bow"]
 
 # CONCEPTS = ["person, violin, bow"]              
 
-MAX_FRAMES = 1500
+MAX_FRAMES = 1292
 FPS = 30
 
 # how many pixels to grow the combined mask by, to close small gaps
