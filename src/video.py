@@ -72,6 +72,7 @@ print("Model loaded successfully.")
 
 video_frames, _ = load_video(VIDEO_PATH, num_frames=MAX_FRAMES)
 video_frames = video_frames[:MAX_FRAMES]
+print(f"DEBUG: loaded {len(video_frames)} frames")  # temporary diagnostic
 
 # accumulated across all concepts
 combined_masks = {}
@@ -126,6 +127,7 @@ for concept in CONCEPTS:
     # clear
     del inference_session
     torch.cuda.empty_cache()
+    print(f"DEBUG: after concept '{concept}', combined_masks has {len(combined_masks)} frame entries")  # temporary diagnostic
 
 
 def extract_mask(image, mask, background_color=(255, 255, 255)):
