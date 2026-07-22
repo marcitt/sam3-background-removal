@@ -9,6 +9,7 @@
 #SBATCH --error=logs/video.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=m.talbot@bham.ac.uk
+#SBATCH --open-mode=truncate
  
 export SAM3_PROJECT_ROOT=/rds/projects/d/dilucam-arme/sam3-background-removal
 export HF_HUB_CACHE=${SAM3_PROJECT_ROOT}/hf_cache
