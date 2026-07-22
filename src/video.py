@@ -66,7 +66,7 @@ model_config.hotstart_unmatch_thresh = 4
 model_config.min_trk_keep_alive = -1
 
 
-model = Sam3VideoModel.from_pretrained("facebook/sam3", config=model_config,  dtype=torch.bfloat16).to(device)
+model = Sam3VideoModel.from_pretrained("facebook/sam3", config=model_config,  dtype=torch.bfloat16, low_cpu_mem_usage=True).to(device)
 processor = Sam3VideoProcessor.from_pretrained("facebook/sam3")
 print("Model loaded successfully.")
 
