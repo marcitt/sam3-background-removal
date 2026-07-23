@@ -31,8 +31,10 @@ PROJECT_ROOT = os.environ.get(
 VIDEO_NAME = args.video
 TEXT_PROMPT = args.prompt
 
+PROMPT_SLUG = TEXT_PROMPT.replace(" ", "_")
+
 FRAME_DIR = os.path.join(PROJECT_ROOT, "data_out", VIDEO_NAME, "frames")
-MASK_DIR = os.path.join(PROJECT_ROOT, "data_out", VIDEO_NAME, "masks")
+MASK_DIR = os.path.join(PROJECT_ROOT, "data_out", VIDEO_NAME, "masks", PROMPT_SLUG)
 
 os.makedirs(MASK_DIR, exist_ok=True)
 
