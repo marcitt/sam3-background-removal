@@ -88,7 +88,14 @@ for i, frame_file in enumerate(frame_files):
     )[0]
 
     # Save segmentation mask
-    mask = results["segmentation"].cpu().numpy().astype(np.uint8)
+    instance_masks = results["masks"].cpu().numpy() > 0.5
+    if instance_masks.shape[0] == 0:
+        h, w = image.size[1], image.size[0]
+        mask = np.zeros((h, w), dtype=np.uint8)
+    else:
+        mask = (instance_masks.any(axis=0) * 255).astype(np.uint8)
+
+    Image.fromarray(mask).save(mask_path)
 
     Image.fromarray(mask).save(mask_path)
     
