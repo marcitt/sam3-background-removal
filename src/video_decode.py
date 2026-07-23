@@ -32,7 +32,7 @@ os.makedirs(MASK_DIR, exist_ok=True)
 
 ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 subprocess.run([
-    "ffmpeg_path",
+    ffmpeg_path,
     "-i", VIDEO_PATH,
     "-vsync", "0",
     os.path.join(FRAME_DIR, "frame_%06d.png"),
