@@ -25,7 +25,7 @@ args = parser.parse_args()
 # Paths
 PROJECT_ROOT = os.environ.get(
     "SAM3_PROJECT_ROOT",
-    "/rds/projects/d/dilucam-arme/marci_sam3_segmentation/sam3-background-removal",
+    "/rds/projects/d/dilucam-arme/sam3-background-removal",
 )
 
 VIDEO_NAME = args.video
